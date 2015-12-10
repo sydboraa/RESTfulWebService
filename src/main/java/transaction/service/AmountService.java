@@ -5,7 +5,7 @@ package transaction.service;
  */
 public class AmountService extends ResponseService {
 
-    private double amount;
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    private double sum;
+    public double getSum() { return sum; }
+    public void setSum(double amount) { this.sum = sum; }
 }

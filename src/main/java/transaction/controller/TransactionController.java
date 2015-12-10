@@ -68,7 +68,7 @@ public class TransactionController {
     public ResponseService getSum(@PathVariable("transaction_id") long transaction_id) {
         AmountService amount = new AmountService();
         try {
-            amount.setAmount(transactionService.findAmount(transaction_id, transactionMap, transactionsLinkedWithParentIdMap));
+            amount.setSum(transactionService.findAmount(transaction_id, transactionMap, transactionsLinkedWithParentIdMap));
             return amount;
 
         } catch (NullPointerException ex) {
