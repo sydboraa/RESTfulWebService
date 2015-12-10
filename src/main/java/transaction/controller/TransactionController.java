@@ -32,7 +32,6 @@ public class TransactionController {
             transactionService.addToTypeIndex(transaction_id, transaction.getType(), typeIndexMap);
             status.setStatus("ok");
             return status;
-
         } else {
             status.setStatus("NOK. There is another transaction with the same id.");
             return status;
