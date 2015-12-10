@@ -1,9 +1,9 @@
-package transaction.service;
+package transaction.model;
 
 /**
  * Created by sb on 10.12.2015.
  */
-public class StatusService extends ResponseService {
+public class Status extends Response {
 
     private String status;
     public String getStatus() {
