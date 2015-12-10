@@ -9,6 +9,7 @@ public final class Roots {
     public static final String GET_ALL_TRANSACTIONS = "/transactionservice/transaction";
     public static final String GET_SPECIFIC_TRANSACTION = "/transactionservice/transaction/{transaction_id}";
     public static final String GET_TYPE = "/transactionservice/types/{type}";
+    public static final String GET_ALL_UNIQE_TYPES = "/transactionservice/types";
     public static final String GET_TOTAL_AMOUNT = "/transactionservice/sum/{transaction_id}";
 
     /* PUT */

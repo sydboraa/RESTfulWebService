@@ -7,5 +7,5 @@ public class AmountService extends ResponseService {
 
     private double sum;
     public double getSum() { return sum; }
-    public void setSum(double amount) { this.sum = sum; }
+    public void setSum(double sum) { this.sum = sum; }
 }

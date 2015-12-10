@@ -42,8 +42,7 @@ public class TransactionService {
         }
     }
 
-    public void checkAndAddForParentTransactions(long transactionId,
-                                                 Transaction transaction,
+    public void checkAndAddForParentTransactions(Transaction transaction,
                                                  Map<Long, Set<Transaction>> transactionsLinkedWithParentIdMap) {
 
         if(transaction != null) {

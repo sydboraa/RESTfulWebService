@@ -28,7 +28,7 @@ public class TransactionController {
         StatusService status = new StatusService();
         if(storedTransaction == null) {
             transactionMap.put(transaction_id, transaction);
-            transactionService.checkAndAddForParentTransactions(transaction_id, transaction, transactionsLinkedWithParentIdMap);
+            transactionService.checkAndAddForParentTransactions(transaction, transactionsLinkedWithParentIdMap);
             transactionService.addToTypeIndex(transaction_id, transaction.getType(), typeIndexMap);
             status.setStatus("ok");
             return status;
@@ -41,8 +41,8 @@ public class TransactionController {
 
     /* get all transactions */
     @RequestMapping(method=RequestMethod.GET, value= Roots.GET_ALL_TRANSACTIONS)
-    public Collection<Transaction> getAll() {
-        return transactionMap.values();
+    public List<Transaction> getAll() {
+        return new ArrayList(transactionMap.values());
     }
 
     /* get a specific transaction using transaction_id */
@@ -51,6 +51,11 @@ public class TransactionController {
         return transactionMap.get(transaction_id);
     }
 
+    /* get all unique types */
+    @RequestMapping(method=RequestMethod.GET, value= Roots.GET_ALL_UNIQE_TYPES)
+    public Set<String> getAllTypes() {
+        return typeIndexMap.keySet();
+    }
 
     /* get transactions' ids that share the same types */
     @RequestMapping(method=RequestMethod.GET, value= Roots.GET_TYPE)
@@ -66,9 +71,10 @@ public class TransactionController {
     /* A sum of all transactions that are transitively linked by their parent_id to $transaction_id */
     @RequestMapping(method=RequestMethod.GET, value= Roots.GET_TOTAL_AMOUNT, produces = "application/json")
     public ResponseService getSum(@PathVariable("transaction_id") long transaction_id) {
-        AmountService amount = new AmountService();
         try {
-            amount.setSum(transactionService.findAmount(transaction_id, transactionMap, transactionsLinkedWithParentIdMap));
+            AmountService amount = new AmountService();
+            double totalAmount = transactionService.findAmount(transaction_id, transactionMap, transactionsLinkedWithParentIdMap);
+            amount.setSum(totalAmount);
             return amount;
 
         } catch (NullPointerException ex) {
