@@ -14,6 +14,7 @@ public class TransactionController {
 
     private Map<Long, Transaction> transactionMap = new HashMap<>();
     private Map<String, Set<Long>> typeIndexMap = new HashMap<String, Set<Long>>();
+    private Map<Long, Set<Transaction>> transactionsLinkedWithParentIdMap = new HashMap<Long, Set<Transaction>>();
 
     @RequestMapping(method=RequestMethod.GET, value="/transaction")
     public Collection<Transaction> getAll() {
@@ -31,6 +32,7 @@ public class TransactionController {
         ResponseService status = new ResponseService();
         if(storedTransaction == null) {
             transactionMap.put(transaction_id, transaction);
+            checkAndAddForParentTransactions(transaction_id, transaction);
             addToTypeIndex(transaction_id, transaction.getType());
             status.setStatus("ok");
             return status;
@@ -51,6 +53,23 @@ public class TransactionController {
         }
     }
 
+    public void checkAndAddForParentTransactions(long transactionId, Transaction transaction) {
+        if(transaction != null) {
+            long parentId = transaction.getParent_id();
+            if(parentId != 0) {
+                Set<Transaction> transactionIdsSet = transactionsLinkedWithParentIdMap.get(parentId);
+                if(transactionIdsSet == null) {
+                    Set<Transaction> transactionSet = new HashSet<Transaction>();
+                    transactionSet.add(transaction);
+                    transactionsLinkedWithParentIdMap.put(parentId, transactionSet);
+                } else {
+                    // var olana eklenecek
+                    transactionIdsSet.add(transaction);
+                }
+            } //otherwise, there is no parent_id for this transaction
+        }
+    }
+
     private void addToTypeIndex(long transaction_id, String type) {
         if(type != null){
            Set<Long> transactionIdSetFromMap = typeIndexMap.get(type);
@@ -64,8 +83,25 @@ public class TransactionController {
         }
     }
 
-    private void findAmount(long transactionId) {
-
+    @RequestMapping(method=RequestMethod.GET, value="/sum/{transaction_id}")
+    public double getSum(@PathVariable("transaction_id") long transaction_id) {
+        return findAmount(transaction_id);
     }
+
+    private double findAmount(long transactionId) {
+        Transaction currentTransaction = transactionMap.get(transactionId);
+        Set<Transaction> transactionSetBOParent = transactionsLinkedWithParentIdMap.get(transactionId);
+        if(transactionSetBOParent != null) {
+            double sum = 0;
+            for (Transaction transaction : transactionSetBOParent) {
+                sum += transaction.getAmount();
+            }
+            return currentTransaction.getAmount() + sum;
+        } else {
+            return currentTransaction.getAmount();
+        }
+    }
+
+
 
 }
